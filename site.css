@@ -1,0 +1,339 @@
+/* Sk8tics — sk8tics.com
+   The palette and the typeface pairing are lifted from the app's own
+   lib/theme.ts rather than invented, so the site and the product read as one
+   thing. Committed dark: the app is dark and a white marketing page in front
+   of it would be a different product. */
+
+:root {
+  --ground:   #0E1420;
+  --surface:  #18212F;
+  --raised:   #212C3D;
+  --rule:     #2C3849;
+  --text:     #E8ECF1;
+  --muted:    #8494AB;
+  --dim:      #5D6C81;
+  --accent:   #0A8CF5;
+  --accent-2: #5CC8FF;
+  --good:     #35C39E;
+  --warn:     #E8A03D;
+  --down:     #D96A7E;
+
+  --ui:   'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --measure: 34rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--ui);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; height: auto; }
+
+::selection { background: var(--accent); color: #03121F; }
+
+:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------- shell */
+
+.wrap {
+  width: 100%;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding-inline: 20px;
+}
+
+.site-head {
+  border-bottom: 1px solid var(--rule);
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  background: color-mix(in srgb, var(--ground) 92%, transparent);
+  backdrop-filter: blur(8px);
+  z-index: 10;
+}
+
+.site-head .wrap {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-block: 14px;
+}
+
+.wordmark {
+  font-family: var(--ui);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.wordmark span { color: var(--accent-2); }
+
+.site-nav {
+  margin-left: auto;
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.site-nav a {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+.site-nav a:hover, .site-nav a[aria-current] { color: var(--text); }
+
+main { padding-block: 44px 8px; }
+
+.site-foot {
+  border-top: 1px solid var(--rule);
+  margin-top: 64px;
+  padding-block: 28px calc(28px + env(safe-area-inset-bottom, 0px));
+  color: var(--dim);
+  font-size: 0.8rem;
+}
+.site-foot .wrap { display: flex; flex-wrap: wrap; gap: 8px 22px; align-items: baseline; }
+.site-foot a { color: var(--muted); text-decoration: none; }
+.site-foot a:hover { color: var(--text); }
+.site-foot .spacer { margin-left: auto; }
+
+/* ---------------------------------------------------------------- type */
+
+h1, h2, h3 { text-wrap: balance; margin: 0; letter-spacing: -0.02em; }
+
+h1 {
+  font-size: clamp(2rem, 6.4vw, 3rem);
+  line-height: 1.08;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-top: 2.6rem;
+  margin-bottom: 0.7rem;
+}
+
+h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1.8rem;
+  margin-bottom: 0.35rem;
+}
+
+p, li { max-width: var(--measure); }
+p { margin: 0 0 1rem; }
+
+a { color: var(--accent-2); text-underline-offset: 3px; }
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+
+.lede {
+  font-size: 1.12rem;
+  color: var(--muted);
+  max-width: var(--measure);
+  margin-top: 18px;
+}
+
+.stamp {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--dim);
+  margin-top: 10px;
+}
+
+ul.plain { padding-left: 1.1rem; margin: 0 0 1rem; }
+ul.plain li { margin-bottom: 0.4rem; }
+
+/* The app marks a row with a coloured left rule rather than boxing it. Reused
+   here as the one recurring structural device, so a section of the site and a
+   row of the app are recognisably the same family. */
+.note {
+  border-left: 3px solid var(--rule);
+  padding: 2px 0 2px 16px;
+  margin: 1.4rem 0;
+  color: var(--muted);
+}
+.note.accent { border-left-color: var(--accent); }
+.note.warn   { border-left-color: var(--warn); }
+.note strong { color: var(--text); font-weight: 600; }
+
+/* ------------------------------------------------------- protocol specimen */
+
+.sheet {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 18px 18px 16px;
+  margin-top: 30px;
+  font-family: var(--mono);
+  overflow-x: auto;
+}
+
+.sheet-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--dim);
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.el {
+  border-left: 3px solid var(--warn);
+  padding-left: 12px;
+}
+
+.el-line {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+}
+.el-pos    { color: var(--dim); font-size: 0.78rem; }
+.el-was    { color: var(--muted); text-decoration: line-through; }
+.el-arrow  { color: var(--dim); }
+.el-now    { color: var(--warn); font-weight: 500; }
+.el-spacer { flex: 1; min-width: 6px; }
+.el-base   { color: var(--muted); font-size: 0.85rem; }
+.el-goe    { color: var(--down); font-size: 0.85rem; }
+.el-score  { color: var(--text); font-weight: 500; }
+
+.judges {
+  display: flex;
+  gap: 9px;
+  margin-top: 6px;
+  font-size: 0.72rem;
+  color: var(--dim);
+}
+.judges .lo { color: var(--down); }
+.judges .hi { color: var(--good); }
+
+.coach-note {
+  font-family: var(--ui);
+  font-size: 0.88rem;
+  color: var(--text);
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--rule);
+}
+.coach-note .who {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--dim);
+  display: block;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ---------------------------------------------------------------- blocks */
+
+.feature {
+  border-top: 1px solid var(--rule);
+  padding-top: 20px;
+  margin-top: 26px;
+}
+.feature h3 { margin-top: 0; }
+.feature p { margin-bottom: 0; color: var(--muted); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 26px;
+}
+.grid p { max-width: none; }
+
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+  align-items: center;
+}
+
+.btn {
+  display: inline-block;
+  background: var(--accent);
+  color: #03121F;
+  font-family: var(--ui);
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-decoration: none;
+  padding: 11px 20px;
+  border-radius: 8px;
+}
+.btn:hover { background: var(--accent-2); }
+
+.btn-quiet {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--rule);
+}
+.btn-quiet:hover { background: var(--surface); color: var(--text); }
+
+.pending {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--dim);
+}
+
+/* ---------------------------------------------------------------- tables */
+
+.data {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  margin: 1rem 0 1.4rem;
+}
+.data th, .data td {
+  text-align: left;
+  vertical-align: top;
+  padding: 9px 14px 9px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.data th {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-weight: 400;
+  white-space: nowrap;
+}
+.data td { color: var(--muted); }
+.data td:first-child { color: var(--text); white-space: nowrap; padding-right: 22px; }
+
+.scroll-x { overflow-x: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
