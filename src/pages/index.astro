@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import VideoHero from '../components/VideoHero.astro';
+import Features from '../components/Features.astro';
+import WhoItsFor from '../components/WhoItsFor.astro';
+import Screenshots from '../components/Screenshots.astro';
+import About from '../components/About.astro';
+import ContactForm from '../components/ContactForm.astro';
+---
+<Base
+  title="Sk8tics"
+  description="A practice log for figure skaters and their coaches. Record what a panel actually called, against what the programme planned."
+  home
+>
+  <VideoHero />
+  <div class="wrap">
+    <Features />
+    <WhoItsFor />
+    <Screenshots />
+    <About />
+    <ContactForm />
+  </div>
+</Base>

@@ -1,0 +1,53 @@
+---
+import StoreBadges from './StoreBadges.astro';
+// The video files are not committed. Until they are, the last <source> fails,
+// the script below removes the sources and marks the hero data-video="failed",
+// and the poster (or the plain --ground background) is all anyone sees.
+---
+<section class="hero">
+  <video muted loop playsinline autoplay preload="none" poster="/video/hero-poster.jpg" aria-hidden="true"></video>
+  <div class="wrap hero-body">
+    <p class="eyebrow">Figure skating practice log</p>
+    <h1>The sheet says what happened. It doesn&rsquo;t say why.</h1>
+    <p class="lede">
+      Sk8tics keeps a skater&rsquo;s training and competition record in one place &mdash;
+      what was planned, what the panel called, and the one thing a protocol can
+      never tell you: what your coach saw.
+    </p>
+    <StoreBadges />
+  </div>
+</section>
+
+<script>
+  import { shouldLoadVideo } from '../lib/hero-video.mjs';
+
+  const hero = document.querySelector<HTMLElement>('.hero');
+  const video = hero?.querySelector('video');
+  if (hero && video) {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const saveData = (navigator as any).connection?.saveData === true;
+    if (shouldLoadVideo({ reducedMotion, saveData })) {
+      const sources = [
+        ['/video/hero.webm', 'video/webm'],
+        ['/video/hero.mp4', 'video/mp4'],
+      ].map(([src, type]) => {
+        const s = document.createElement('source');
+        s.src = src;
+        s.type = type;
+        return s;
+      });
+      // A <source> that fails fires "error" on itself; once the last one has
+      // failed there is nothing left to try.
+      sources[sources.length - 1].addEventListener('error', () => {
+        video.querySelectorAll('source').forEach((s) => s.remove());
+        hero.dataset.video = 'failed';
+      });
+      video.append(...sources);
+      video.preload = 'auto';
+      video.load();
+      video.play().catch(() => {});
+    } else {
+      hero.dataset.video = 'off';
+    }
+  }
+</script>

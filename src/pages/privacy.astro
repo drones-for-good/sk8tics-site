@@ -1,31 +1,13 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#0E1420">
-  <title>Sk8tics Privacy</title>
-  <meta name="description" content="What Sk8tics collects, who can see it, and how to get rid of it.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
-  <link rel="stylesheet" href="site.css">
-</head>
-<body>
-
-<header class="site-head">
-  <div class="wrap">
-    <a class="wordmark" href="index.html">Sk8<span>tics</span></a>
-    <nav class="site-nav">
-      <a href="support.html">Support</a>
-      <a href="privacy.html" aria-current="page">Privacy</a>
-      <a href="delete-account.html">Delete account</a>
-    </nav>
-  </div>
-</header>
-
-<main class="wrap">
+---
+// <main> content ported from skatelog-web 8e7af91:web/privacy.html. Only hrefs
+// change (support.html#contact becomes /support#contact); the text must stay
+// as approved, and `node scripts/check-dist.mjs --source <dir>` compares it.
+import Base from '../layouts/Base.astro';
+---
+<Base
+  title="Sk8tics Privacy"
+  description="What Sk8tics collects, who can see it, and how to get rid of it."
+>
 
   <p class="eyebrow">Privacy policy</p>
   <h1>What we keep, and what we don&rsquo;t.</h1>
@@ -76,7 +58,9 @@
         <td>Competition records</td>
         <td>Results imported from officially published protocols: competitor
             name, club, placement, element and component scores, and the
-            individual judges&rsquo; marks.</td>
+            individual judges&rsquo; marks, plus any notes. You can record
+            your own, and a linked coach can record one for you; each record
+            belongs to whoever recorded it.</td>
         <td>To keep a competition record without retyping a sheet.</td>
       </tr>
       <tr>
@@ -88,14 +72,18 @@
     </tbody>
   </table>
   </div>
+  <p>
+    Your first and last name, your email address and the message you send through the <a href="/support#contact">contact form</a> are emailed to us and kept in our Gmail mailbox; none of them is stored in the app or its database, except a keyed one-way hash of your email address, as the next sentence explains. To limit abuse, a keyed one-way hash of the sender&rsquo;s email and network address is kept, and deleted once it is more than 24 hours old, the next time anyone uses the form.
+  </p>
 
   <h3>A note on competition results</h3>
   <p>
     Competition protocols are documents Skate Ontario and skatingresults.ca
     publish openly on the web. Importing one copies information that is already
-    public into your own record. Because a protocol lists everyone in a segment,
-    a coach can also save another skater&rsquo;s result to compare against
-    &mdash; exactly as they could by keeping the printed sheet.
+    public into your own record, whether you import it yourself or a linked
+    coach does it for you. Because a protocol lists everyone in a segment, you
+    or your coach can also save another skater&rsquo;s result to compare
+    against &mdash; exactly as you could by keeping the printed sheet.
   </p>
 
   <h2>What the app does not collect</h2>
@@ -111,9 +99,11 @@
   <ul class="plain">
     <li><strong>You</strong> &mdash; all of it.</li>
     <li><strong>A coach you have linked with</strong> &mdash; your log,
-        programmes, scores and competition records. A link needs both sides to
-        agree, and either side can end it. When it ends, the coach loses access
-        immediately.</li>
+        programmes, scores and competition records, including the ones you
+        recorded yourself, which they can read but not change. A link needs
+        both sides to agree, and either side can end it. When it ends, the
+        coach loses access immediately, except to the scores and competition
+        records they recorded themselves.</li>
     <li><strong>Nobody else.</strong> Not other skaters, not other coaches, not
         your club.</li>
   </ul>
@@ -130,6 +120,7 @@
     <thead><tr><th>Service</th><th>What it does</th></tr></thead>
     <tbody>
       <tr><td>Supabase</td><td>Hosts the database, signs you in, and runs the server functions.</td></tr>
+      <tr><td>Google (Gmail)</td><td>Carries and stores the messages you send through the contact form.</td></tr>
       <tr><td>Expo</td><td>Delivers app updates, and passes notifications to Apple and Google.</td></tr>
       <tr><td>Apple &middot; Google</td><td>Distribute the app and deliver notifications to your device.</td></tr>
       <tr><td>Skate Ontario &middot; skatingresults.ca</td><td>We <em>read</em> their published results. Nothing about you is ever sent to them.</td></tr>
@@ -149,7 +140,7 @@
   </p>
   <div class="note warn">
     <strong>Parents and guardians.</strong> You may ask to see, correct or
-    delete a child&rsquo;s account at any time by emailing us, and we will act
+    delete a child&rsquo;s account at any time through the <a href="/support#contact">contact form</a>, and we will act
     on it without requiring the child&rsquo;s agreement. If you would rather the
     account simply not exist, say so and it will be deleted outright.
   </div>
@@ -163,20 +154,22 @@
 
   <h2>Deleting your account</h2>
   <p>
-    In the app: open the account sheet from the header and choose
-    <strong>Delete account</strong>. You confirm by typing your username, and
-    the deletion is immediate and total &mdash; the sign-in goes too, not just
-    the data behind it.
+    In the app: tap <strong>Account</strong> at the top of any screen, scroll
+    to the bottom, type your username where it says <strong>Type <em>your username</em>
+    to confirm</strong>, then tap <strong>Delete my account</strong>. The
+    deletion is immediate and total &mdash; the sign-in goes too, not just the
+    data behind it.
   </p>
   <p>
-    You can also <a href="delete-account.html">request deletion from this
-    website</a> without installing anything.
+    If you can't sign in, use the <a href="/support#contact">contact form</a> with the email address on
+    the account. We will reply to that address to confirm before we delete
+    anything, and you do not need to install anything.
   </p>
 
   <h2>Your other rights</h2>
   <p>
     You can ask for a copy of your information, ask us to correct it, or ask
-    what we hold. Email us and we will answer. Under Canadian privacy law
+    what we hold. Send us a message through the <a href="/support#contact">contact form</a> and we will answer. Under Canadian privacy law
     (PIPEDA) you may also complain to the Office of the Privacy Commissioner of
     Canada if you are unhappy with how we have handled a request.
   </p>
@@ -199,22 +192,8 @@
 
   <h2>Contact</h2>
   <p>
-    <a href="mailto:ying.skating@gmail.com">ying.skating@gmail.com</a> &mdash;
+    The <a href="/support#contact">contact form</a> &mdash;
     for privacy questions, data requests, and anything a guardian needs.
   </p>
 
-</main>
-
-<footer class="site-foot">
-  <div class="wrap">
-    <span>&copy; 2026 Sk8tics</span>
-    <a href="privacy.html">Privacy</a>
-    <a href="support.html">Support</a>
-    <a href="delete-account.html">Delete your account</a>
-    <span class="spacer"></span>
-    <span>Made in Ontario</span>
-  </div>
-</footer>
-
-</body>
-</html>
+</Base>

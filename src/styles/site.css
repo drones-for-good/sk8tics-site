@@ -73,14 +73,34 @@ img { max-width: 100%; height: auto; }
   padding-block: 14px;
 }
 
+/* The real app icon (a byte copy of assets/icon.png) beside the wordmark.
+   Sized explicitly so the global `img { height: auto }` can't shrink it. */
 .wordmark {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
   font-family: var(--ui);
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 1.5rem;
+  line-height: 1;
   letter-spacing: -0.02em;
   color: var(--text);
   text-decoration: none;
   white-space: nowrap;
+}
+.wordmark img {
+  display: block;
+  width: 64px;
+  height: 64px;
+  max-width: none;
+  margin-right: 12px;
+  border-radius: 14px;
+}
+/* On a phone the 64 px icon, the wordmark and both menu links share one
+   nowrap row; a touch smaller keeps it clear of the edge at 320 px. */
+@media (max-width: 400px) {
+  .wordmark { font-size: 1.35rem; }
+  .wordmark img { width: 60px; height: 60px; margin-right: 10px; border-radius: 13px; }
 }
 .wordmark span { color: var(--accent-2); }
 
@@ -105,13 +125,14 @@ main { padding-block: 44px 8px; }
   border-top: 1px solid var(--rule);
   margin-top: 64px;
   padding-block: 28px calc(28px + env(safe-area-inset-bottom, 0px));
-  color: var(--dim);
+  color: var(--muted);
   font-size: 0.8rem;
 }
 .site-foot .wrap { display: flex; flex-wrap: wrap; gap: 8px 22px; align-items: baseline; }
 .site-foot a { color: var(--muted); text-decoration: none; }
 .site-foot a:hover { color: var(--text); }
-.site-foot .spacer { margin-left: auto; }
+.site-foot .wrap { gap: 8px 10px; }
+.site-foot .sep { color: var(--dim); }
 
 /* ---------------------------------------------------------------- type */
 
@@ -129,6 +150,10 @@ h2 {
   margin-top: 2.6rem;
   margin-bottom: 0.7rem;
 }
+/* An #about or #contact jump lands the heading below the sticky header
+   (about 93 px tall with the 64 px icon, plus any notch inset). If the icon or
+   the header padding grows, measure the header again and raise this. */
+h2[id], form[id] { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 6rem); }
 
 h3 {
   font-size: 1rem;
@@ -264,6 +289,30 @@ ul.plain li { margin-bottom: 0.4rem; }
 }
 .feature h3 { margin-top: 0; }
 .feature p { margin-bottom: 0; color: var(--muted); }
+.feature p + p { margin-top: 0.6rem; }
+
+/* Two app screens side by side, framed like the app's own cards. They stay
+   two-up down to 320 px, where each is still ~140 px wide. */
+.shots { margin: 34px 0 0; }
+.shots-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+  max-width: 30rem;
+}
+.shots img {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+}
+.shots figcaption {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 10px;
+}
 
 .grid {
   display: grid;
@@ -306,6 +355,54 @@ ul.plain li { margin-bottom: 0.4rem; }
   color: var(--dim);
 }
 
+/* ---------------------------------------------------------------- contact */
+
+/* The contact form (src/components/ContactForm.astro, on / and /support):
+   first and last name, an email, a message, a Send button. Its heading sits
+   inside the form so a #contact jump lands on the heading. */
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: var(--measure);
+  margin-top: 1rem;
+}
+.contact label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.contact input,
+.contact textarea {
+  width: 100%;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: var(--ui);
+  font-size: 1rem;   /* 16px keeps iOS from zooming on focus */
+  line-height: 1.5;
+}
+.contact textarea { resize: vertical; min-height: 9rem; }
+.contact input::placeholder { color: var(--dim); }
+.contact input:focus-visible,
+.contact textarea:focus-visible { border-color: var(--accent-2); }
+.contact .btn {
+  align-self: flex-start;
+  margin-top: 12px;
+  border: 0;
+  cursor: pointer;
+}
+.contact .btn:disabled { opacity: 0.6; cursor: default; }
+.contact-status { color: var(--muted); min-height: 1.65em; margin: 4px 0 0; }
+
+/* Honeypot: a field people never see or reach, so only a script fills it. */
+.hp { display: none; }
+
 /* ---------------------------------------------------------------- tables */
 
 .data {
@@ -336,4 +433,77 @@ ul.plain li { margin-bottom: 0.4rem; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* ================================================================ DRO-102
+   Additions for the Astro rebuild. They use the tokens above and add none, so
+   scripts/check-dist.mjs can compare :root with scripts/source-tokens.json. */
+
+/* ---------------------------------------------------------------- hero */
+
+/* The poster (or, with no poster, the plain ground colour) is what most
+   visitors see first; the video only loads when the hero script decides it
+   should (src/lib/hero-video.mjs). */
+.hero {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--ground);
+  border-bottom: 1px solid var(--rule);
+}
+.hero video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.45;
+  pointer-events: none;
+}
+/* Keeps the headline readable over any frame of the video. */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, var(--ground) 100%);
+  pointer-events: none;
+}
+.hero-body {
+  position: relative;
+  z-index: 1;
+  padding-block: 64px 48px;
+}
+main.home { padding-top: 0; }
+
+/* ---------------------------------------------------------------- features */
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 16px;
+  margin-top: 1rem;
+}
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 18px;
+  min-width: 0;
+}
+.feature-card.wide { grid-column: 1 / -1; }
+.feature-card h3 { margin-top: 0; }
+.feature-card p { color: var(--muted); max-width: none; }
+.feature-card p:last-child { margin-bottom: 0; }
+.feature-card .sheet { background: var(--raised); margin-top: 14px; }
+
+/* ---------------------------------------------------------------- phone frames */
+
+.phone {
+  background: var(--raised);
+  border: 1px solid var(--rule);
+  border-radius: 26px;
+  padding: 8px;
+}
+.shots .phone img {
+  border: 0;
+  border-radius: 19px;
 }

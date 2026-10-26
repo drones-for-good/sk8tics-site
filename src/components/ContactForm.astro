@@ -1,0 +1,65 @@
+---
+import { CONTACT_URL } from '../config';
+// One component, rendered on / and on /support, so the two forms cannot drift.
+// Ported from 8e7af91:web/support.html. The heading sits inside the form so
+// that a #contact jump lands on it.
+// The placeholder is written you&#64;example.com so the built HTML holds no
+// email-shaped string for a grep to trip on; the browser shows you@example.com.
+---
+<form class="contact" id="contact" method="post" data-endpoint={CONTACT_URL}>
+  <h2>Send us a message</h2>
+  <label for="contact-first-name">First name</label>
+  <input type="text" id="contact-first-name" name="firstName" autocomplete="given-name" required maxlength="100" pattern=".*\S.*">
+  <label for="contact-last-name">Last name</label>
+  <input type="text" id="contact-last-name" name="lastName" autocomplete="family-name" required maxlength="100" pattern=".*\S.*">
+  <label for="contact-email">Your email</label>
+  <input type="email" id="contact-email" name="email" required maxlength="254" autocomplete="email" placeholder="you&#64;example.com">
+  <label for="contact-message">Your message</label>
+  <textarea id="contact-message" name="message" required maxlength="5000" rows="7"></textarea>
+  <div class="hp" aria-hidden="true" style="display:none">
+    <input type="text" name="website" tabindex="-1" autocomplete="off">
+  </div>
+  <button class="btn" type="submit">Send</button>
+  <p class="contact-status" id="contact-status" role="status" aria-live="polite"></p>
+</form>
+
+<script>
+  const THANKS = "Thanks, your message was sent. We'll reply to the email you gave.";
+  const SORRY = "Sorry, that didn't send. Please try again in a few minutes.";
+  // Only a 400 means the function read the form and rejected a field; a
+  // 429, a 500 or no answer at all is worth trying again later.
+  const CHECK = 'Please check your name, email and message.';
+
+  document.querySelectorAll<HTMLFormElement>('form.contact[data-endpoint]').forEach((form) => {
+    const status = form.querySelector('.contact-status')!;
+    const button = form.querySelector('button')!;
+    const field = (name: string) => form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      button.disabled = true;
+      status.textContent = '';
+      fetch(form.dataset.endpoint!, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          firstName: field('firstName').value.trim(),
+          lastName: field('lastName').value.trim(),
+          email: field('email').value,
+          message: field('message').value,
+          website: field('website').value,
+        }),
+      }).then((res) => {
+        if (res.status === 400) return CHECK;
+        return res.json().then(
+          (body) => (res.ok && body && body.ok === true ? THANKS : SORRY),
+          () => SORRY,
+        );
+      }, () => SORRY).then((text) => {
+        button.disabled = false;
+        // On any failure the message stays in the box so nothing typed is lost.
+        if (text === THANKS) form.reset();
+        status.textContent = text;
+      });
+    });
+  });
+</script>

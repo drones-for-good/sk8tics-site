@@ -1,0 +1,17 @@
+{
+  "name": "sk8tics-site",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "node scripts/check-dist.mjs",
+    "check:selftest": "node scripts/selftest-check.mjs",
+    "test": "node --test scripts/hero-video.test.mjs"
+  },
+  "dependencies": {
+    "astro": "7.3.8"
+  }
+}

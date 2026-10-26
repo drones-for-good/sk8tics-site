@@ -1,0 +1,85 @@
+---
+// <main> content ported from skatelog-web 8e7af91:web/delete-account.html. Only hrefs
+// change (support.html#contact becomes /support#contact); the text must stay
+// as approved, and `node scripts/check-dist.mjs --source <dir>` compares it.
+import Base from '../layouts/Base.astro';
+---
+<Base
+  title="Delete Your Sk8tics Account"
+  description="How to delete a Sk8tics account and everything in it, from inside the app, or through the contact form if you can't sign in."
+>
+
+  <p class="eyebrow">Account deletion</p>
+  <h1>Delete your Sk8tics account</h1>
+  <p class="lede">
+    Delete it in the app: tap <strong>Account</strong> at the top of any
+    screen, then <strong>Delete my account</strong> at the bottom of the sheet.
+  </p>
+
+  <h2>Delete it in the app</h2>
+  <p>
+    Open Sk8tics and tap <strong>Account</strong> at the top of any screen.
+    Scroll to the bottom of the sheet, type your username where it says
+    <strong>Type <em>your username</em> to confirm</strong>, then tap
+    <strong>Delete my account</strong>.
+  </p>
+  <div class="note accent">
+    <strong>It happens immediately and cannot be undone.</strong>
+    We keep no copy, and there is no grace period to change your mind.
+  </div>
+
+  <h2>If you can't sign in</h2>
+  <p>
+    Only if you can't get into the app, use the <a href="/support#contact">contact form</a> with the
+    email address on the account, and say <em>Delete my Sk8tics account</em>
+    in the message. Include your username if you remember it. We reply to that
+    address to confirm before we delete anything.
+  </p>
+  <p>
+    A parent or guardian may make this request for a child&rsquo;s account. Say
+    so in the message and give the child&rsquo;s username; we do not need the
+    child&rsquo;s agreement.
+  </p>
+
+  <h2>What gets deleted</h2>
+  <ul class="plain">
+    <li>Your sign-in and your email address.</li>
+    <li>Your profile &mdash; username, name, discipline.</li>
+    <li>Every practice session and every element mark in it.</li>
+    <li>Your programmes and their planned content.</li>
+    <li>Every run-through score a coach recorded for you, and their notes.</li>
+    <li>Every competition record saved against you.</li>
+    <li>Your links to coaches.</li>
+    <li>Any device registered for notifications.</li>
+  </ul>
+  <p>
+    If you are a coach, the records you wrote <em>about other skaters</em> are
+    deleted too, since they are part of your account.
+  </p>
+
+  <h2>What is not affected</h2>
+  <p>
+    Competition protocols published by Skate Ontario and skatingresults.ca are
+    their documents on their websites. Deleting a Sk8tics account removes our
+    copy of a result; it has no bearing on the official record, which we do not
+    control and cannot change.
+  </p>
+
+  <h2>How long it takes</h2>
+  <div class="scroll-x">
+  <table class="data">
+    <thead><tr><th>Route</th><th>When it is gone</th></tr></thead>
+    <tbody>
+      <tr><td>In the app</td><td>Immediately, before the screen closes.</td></tr>
+      <tr><td>Through the <a href="/support#contact">contact form</a>, if you can't sign in</td><td>Within 30 days, and normally within a few days.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>
+    Nothing is retained after deletion for analytics or any other purpose,
+    because there is no analytics. Routine encrypted infrastructure backups may
+    hold a copy for a short period before rotating out; they are not readable by
+    the app and are never used to restore an individual account.
+  </p>
+
+</Base>
