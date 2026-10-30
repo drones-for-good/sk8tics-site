@@ -3,5 +3,6 @@ import { APP_STORE_URL, ANDROID_ENABLED, PLAY_STORE_URL } from '../config';
 ---
 <div class="cta">
   <a class="btn" href={APP_STORE_URL}>Get it on the App Store</a>
+  {!ANDROID_ENABLED && <a class="pending" href="/support#android">Android: in testing</a>}
   {ANDROID_ENABLED && <a class="btn btn-quiet" href={PLAY_STORE_URL}>Get it on Google Play</a>}
 </div>

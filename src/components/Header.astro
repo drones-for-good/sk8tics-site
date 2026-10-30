@@ -1,5 +1,5 @@
 ---
-import { LOGIN_ENABLED, APP_URL } from '../config';
+import { LOGIN_ENABLED, APP_URL, SIGNUP_URL } from '../config';
 
 interface Props { current?: 'support' }
 const { current } = Astro.props;
@@ -7,13 +7,18 @@ const { current } = Astro.props;
 // the footer only.
 ---
 <header class="site-head">
-  <div class="wrap">
+  <div class={LOGIN_ENABLED ? 'wrap with-account' : 'wrap'}>
     <a class="wordmark" href="/"><img src="/img/icon.png" width="64" height="64" alt="">Sk8<span>tics</span></a>
     <nav class="site-nav">
       <a href="/#about">About</a>
       <a href="/support" aria-current={current === 'support' ? 'page' : undefined}>Support</a>
       <a href="/#contact">Contact</a>
-      {LOGIN_ENABLED && <a href={APP_URL}>Log in</a>}
+      {LOGIN_ENABLED && (
+        <>
+          <a href={APP_URL}>Log in</a>
+          <a class="nav-cta" href={SIGNUP_URL}>Sign up</a>
+        </>
+      )}
     </nav>
   </div>
 </header>

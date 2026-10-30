@@ -284,17 +284,18 @@ const raw = new Map(files.map((f) => [rel(f), fs.readFileSync(f, 'latin1')]));
   if (CONFIG.LOGIN_ENABLED && !count('app.sk8tics.com')) problems.push('LOGIN_ENABLED is true but no app.sk8tics.com link was built');
   if (!CONFIG.ANDROID_ENABLED) {
     if (count('play.google.com')) problems.push(`ANDROID_ENABLED is false but play.google.com appears ${count('play.google.com')} time(s)`);
+    const GP_PAGES = ['support.html', 'privacy.html'];
     for (const [f, s] of raw) {
       const total = s.split('Google Play').length - 1;
       if (!total) continue;
-      if (f !== 'support.html') { problems.push(`${f}: "Google Play" appears outside support.html`); continue; }
+      if (!GP_PAGES.includes(f)) { problems.push(`${f}: "Google Play" appears outside support.html/privacy.html`); continue; }
       const inMain = byTag(pages.get(f).doc, 'main').map(plain).join(' ').split('Google Play').length - 1;
-      if (inMain !== total) problems.push(`support.html: "Google Play" appears outside <main>`);
+      if (inMain !== total) problems.push(`${f}: "Google Play" appears outside <main>`);
     }
   } else if (!count('play.google.com')) {
     problems.push('ANDROID_ENABLED is true but no play.google.com link was built');
   }
-  report('(e) flags', problems, `LOGIN_ENABLED=${CONFIG.LOGIN_ENABLED}, ANDROID_ENABLED=${CONFIG.ANDROID_ENABLED}; links match the flags${CONFIG.ANDROID_ENABLED ? '' : ', "Google Play" only in support.html <main>'}`);
+  report('(e) flags', problems, `LOGIN_ENABLED=${CONFIG.LOGIN_ENABLED}, ANDROID_ENABLED=${CONFIG.ANDROID_ENABLED}; links match the flags${CONFIG.ANDROID_ENABLED ? '' : ', "Google Play" only in support.html/privacy.html <main>'}`);
 }
 
 // ------------------------------------------------------------------ (f) no Delete account in header or menu

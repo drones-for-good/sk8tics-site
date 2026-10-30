@@ -96,11 +96,18 @@ img { max-width: 100%; height: auto; }
   margin-right: 12px;
   border-radius: 14px;
 }
-/* On a phone the 64 px icon, the wordmark and both menu links share one
-   nowrap row; a touch smaller keeps it clear of the edge at 320 px. */
+/* On a phone the icon and wordmark go a touch smaller to stay clear of the
+   edge at 320 px. */
 @media (max-width: 400px) {
   .wordmark { font-size: 1.35rem; }
   .wordmark img { width: 60px; height: 60px; margin-right: 10px; border-radius: 13px; }
+}
+/* With the account links on (.with-account), five links don't fit beside the
+   wordmark on a phone, so up to 560 px the menu takes its own full-width row
+   under it. */
+@media (max-width: 560px) {
+  .site-head .wrap.with-account { flex-wrap: wrap; row-gap: 10px; }
+  .with-account .site-nav { margin-left: 0; width: 100%; gap: 12px; }
 }
 .wordmark span { color: var(--accent-2); }
 
@@ -118,6 +125,19 @@ img { max-width: 100%; height: auto; }
   letter-spacing: 0.02em;
 }
 .site-nav a:hover, .site-nav a[aria-current] { color: var(--text); }
+/* Sign up's 4 px padding made it the tallest item, and the stretched row left
+   its text 4 px below the others. Giving every menu link the same block
+   padding puts all the boxes, and so all the text, on one line. */
+.with-account .site-nav a { padding-block: 4px; }
+.site-nav a.nav-cta {
+  background: var(--accent);
+  color: #03121F;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  padding: 4px 9px;
+  border-radius: 6px;
+}
+.site-nav a.nav-cta:hover { background: var(--accent-2); color: #03121F; }
 
 main { padding-block: 44px 8px; }
 
@@ -150,10 +170,10 @@ h2 {
   margin-top: 2.6rem;
   margin-bottom: 0.7rem;
 }
-/* An #about or #contact jump lands the heading below the sticky header
+/* An #about, #contact or #android jump lands the target below the sticky header
    (about 93 px tall with the 64 px icon, plus any notch inset). If the icon or
    the header padding grows, measure the header again and raise this. */
-h2[id], form[id] { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 6rem); }
+h2[id], h3[id], form[id] { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 6rem); }
 
 h3 {
   font-size: 1rem;
@@ -349,11 +369,15 @@ ul.plain li { margin-bottom: 0.4rem; }
 }
 .btn-quiet:hover { background: var(--surface); color: var(--text); }
 
+/* "Android: in testing", linking to the Support answer. --muted, not --dim,
+   so it clears 4.5:1 on --ground. */
 .pending {
   font-family: var(--mono);
   font-size: 0.75rem;
-  color: var(--dim);
+  color: var(--muted);
 }
+a.pending { text-decoration: none; }
+a.pending:hover { color: var(--text); }
 
 /* ---------------------------------------------------------------- contact */
 

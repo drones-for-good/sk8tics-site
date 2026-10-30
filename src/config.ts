@@ -15,3 +15,4 @@ export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com
 // app.sk8tics.com link is built anywhere.
 export const LOGIN_ENABLED = false;
 export const APP_URL = 'https://app.sk8tics.com';
+export const SIGNUP_URL = 'https://app.sk8tics.com/?mode=signup';
