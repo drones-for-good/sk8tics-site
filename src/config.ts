@@ -11,8 +11,10 @@ export const APP_STORE_URL = 'https://apps.apple.com/app/id6809558326';
 export const ANDROID_ENABLED = false;
 export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.ying.sk8tics';
 
-// Off until the web app at app.sk8tics.com is ready. While false, no
-// app.sk8tics.com link is built anywhere.
-export const LOGIN_ENABLED = false;
-export const APP_URL = 'https://app.sk8tics.com';
+// On: every page header shows Log in (APP_URL, the web app's sign-in screen)
+// and Sign up (SIGNUP_URL, the same app opened on its sign-up form). Set it to
+// false to build no app.sk8tics.com link anywhere; the phone scroll-margin in
+// src/styles/site.css is sized for the taller header this flag makes.
+export const LOGIN_ENABLED = true;
+export const APP_URL = 'https://app.sk8tics.com/';
 export const SIGNUP_URL = 'https://app.sk8tics.com/?mode=signup';

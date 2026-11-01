@@ -170,10 +170,23 @@ h2 {
   margin-top: 2.6rem;
   margin-bottom: 0.7rem;
 }
-/* An #about, #contact or #android jump lands the target below the sticky header
-   (about 93 px tall with the 64 px icon, plus any notch inset). If the icon or
-   the header padding grows, measure the header again and raise this. */
-h2[id], h3[id], form[id] { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 6rem); }
+/* An #about (the hero section), #contact or #android jump lands the target
+   below the sticky header, plus any notch inset. Header heights measured with
+   Log in and Sign up on (DRO-126, Chromium and WebKit agree):
+     above 560 px            93 px  (one row)                -> 6rem    = 96 px
+     401 to 560 px          131 px  (menu on its own row)    -> 8.5rem  = 136 px
+     400 px and narrower    127 px, and 167 px below 345 px
+                            where the menu wraps to 2 rows   -> 10.75rem = 172 px
+   These are sized for LOGIN_ENABLED = true. With it off the phone header is
+   93 px again, so the two phone values overshoot (nothing is hidden). If the
+   icon, the header padding or the menu grows, measure again and raise them. */
+h2[id], h3[id], form[id], section[id] { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 6rem); }
+@media (max-width: 560px) {
+  h2[id], h3[id], form[id], section[id] { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 8.5rem); }
+}
+@media (max-width: 400px) {
+  h2[id], h3[id], form[id], section[id] { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 10.75rem); }
+}
 
 h3 {
   font-size: 1rem;

@@ -42,7 +42,10 @@ The palette and type pairing come from the app's own `lib/theme.ts`.
 
 - `ANDROID_ENABLED`: off. While it is off there is no Google Play badge and no
   `play.google.com` link anywhere.
-- `LOGIN_ENABLED`: off. While it is off there is no `app.sk8tics.com` link.
+- `LOGIN_ENABLED`: on. Log in goes to `https://app.sk8tics.com/`, Sign up to `https://app.sk8tics.com/?mode=signup`.
+  Every page header has both: Log in opens the web app's sign-in screen and
+  Sign up opens it on the sign-up form. Turned off, no `app.sk8tics.com` link is
+  built anywhere.
 
 The contact form (`src/components/ContactForm.astro`, on `/` and `/support`)
 posts to the Supabase `contact` function. Until that function is deployed,

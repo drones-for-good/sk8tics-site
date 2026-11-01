@@ -367,7 +367,7 @@ const raw = new Map(files.map((f) => [rel(f), fs.readFileSync(f, 'latin1')]));
     if (!byTag(home.doc, 'h2').some((h) => plain(h) === 'Look up scores fast, then compare')) problems.push('no h2 "Look up scores fast, then compare"');
     if (!plain(home.doc).includes('can read it but never change it')) problems.push('missing "can read it but never change it"');
   }
-  report('(j) home-content', problems, '4 feature cards, the DSp3→DSpB sheet, the About h2 and the Coaches promise');
+  report('(j) home-content', problems, '4 feature cards, the DSp3→DSpB sheet, the "Look up scores fast" h2 and the Coaches promise');
 }
 
 // ------------------------------------------------------------------ (k) header Contact
@@ -441,6 +441,56 @@ const raw = new Map(files.map((f) => [rel(f), fs.readFileSync(f, 'latin1')]));
   for (const [k, v] of a) if (b.get(k) !== v) problems.push(`${k}: built "${b.get(k) ?? '(missing)'}", source "${v}"`);
   for (const k of b.keys()) if (!a.has(k)) problems.push(`${k}: in built :root, not in source`);
   report('(m) tokens', problems, `${a.size} :root custom properties equal scripts/source-tokens.json`);
+}
+
+// ------------------------------------------------------------------ (n) header account links
+
+{
+  // Literal, not read from config.ts, so a changed APP_URL (say, the trailing
+  // slash dropped) shows up here rather than being checked against itself.
+  const LOG_IN = 'https://app.sk8tics.com/';
+  const SIGN_UP = 'https://app.sk8tics.com/?mode=signup';
+  const want = CONFIG.LOGIN_ENABLED ? 1 : 0;
+  const problems = [];
+  for (const [f, { doc }] of pages) {
+    for (const h of byTag(doc, 'header')) {
+      const links = byTag(h, 'a');
+      for (const [label, href] of [['Log in', LOG_IN], ['Sign up', SIGN_UP]]) {
+        const hits = links.filter((a) => plain(a) === label);
+        if (hits.length !== want) problems.push(`${f}: header has ${hits.length} "${label}" link(s), expected ${want}`);
+        for (const a of hits) if (a.attrs.href !== href) problems.push(`${f}: header "${label}" → ${a.attrs.href}, expected ${href}`);
+      }
+    }
+  }
+  report('(n) header-account', problems, CONFIG.LOGIN_ENABLED
+    ? `every header has one Log in → ${LOG_IN} and one Sign up → ${SIGN_UP}`
+    : 'LOGIN_ENABLED is false and no header has Log in or Sign up');
+}
+
+// ------------------------------------------------------------------ (o) About lands on the hero
+
+{
+  const problems = [];
+  for (const [f, { doc }] of pages) {
+    for (const h of byTag(doc, 'header')) {
+      const about = byTag(h, 'a').filter((a) => plain(a) === 'About');
+      if (about.length !== 1 || about[0].attrs.href !== '/#about') problems.push(`${f}: header About link is ${about.map((a) => a.attrs.href).join(',') || 'missing'}, expected /#about`);
+    }
+  }
+  const home = pages.get('index.html');
+  if (!home) problems.push('no index.html');
+  else {
+    const withId = all(home.doc, (n) => n.attrs.id === 'about');
+    if (withId.length !== 1) problems.push(`index.html has ${withId.length} id="about", expected 1`);
+    for (const n of withId) {
+      if (n.tag !== 'section' || !hasClass(n, 'hero')) problems.push(`index.html: id="about" is on <${n.tag} class="${n.attrs.class ?? ''}">, expected <section class="hero">`);
+      else if (!byTag(n, 'h1').length) problems.push('index.html: the id="about" hero has no h1');
+    }
+    for (const h of byTag(home.doc, 'h2')) {
+      if (plain(h) === 'Look up scores fast, then compare' && h.attrs.id === 'about') problems.push('index.html: the "Look up scores fast, then compare" h2 has id="about"');
+    }
+  }
+  report('(o) about-target', problems, 'header About → /#about; the only id="about" in index.html is the hero section holding the h1');
 }
 
 process.exit(failed ? 1 : 0);

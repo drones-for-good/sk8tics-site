@@ -110,6 +110,18 @@ const faults = [
     (r) => edit(r, 'delete-account.html', '<a href="/#contact">Contact</a>', '<a href="/support#contact">Contact</a>')],
   ['scanned', 'all <header> elements stripped from support.html',
     (r) => edit(r, 'support.html', /<header class="site-head">[\s\S]*?<\/header>/g, '')],
+  // DRO-126. (n) is only planted against the LOGIN_ENABLED=true build: its
+  // false branch would need a rebuild with the flag flipped (see (e) above).
+  ['(n) header-account', 'a second Log in link in the header of privacy.html',
+    (r) => edit(r, 'privacy.html', '</nav>', '<a href="https://app.sk8tics.com/">Log in</a></nav>')],
+  ['(o) about-target', 'id="about" moved from the hero back onto the bottom h2',
+    (r) => { edit(r, 'index.html', /<section class="hero" id="about"/, '<section class="hero"'); edit(r, 'index.html', /<h2>(Look up scores fast)/, '<h2 id="about">$1'); }],
+  ['(n) header-account', 'Log in href without the trailing slash in support.html',
+    (r) => edit(r, 'support.html', /<a href="https:\/\/app\.sk8tics\.com\/">Log in<\/a>/, '<a href="https://app.sk8tics.com">Log in</a>')],
+  ['(n) header-account', 'Sign up removed from the header of delete-account.html',
+    (r) => edit(r, 'delete-account.html', /<a class="nav-cta" href="https:\/\/app\.sk8tics\.com\/\?mode=signup">Sign up<\/a>/, '')],
+  ['(o) about-target', 'header About pointed at /#top in privacy.html',
+    (r) => edit(r, 'privacy.html', '<a href="/#about">About</a>', '<a href="/#top">About</a>')],
 ];
 
 let missed = 0;
