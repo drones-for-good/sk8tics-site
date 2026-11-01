@@ -87,6 +87,9 @@ const faults = [
     (r) => edit(r, 'privacy.html', '</body>', '<p>Google Play</p></body>')],
   ['(e) flags', '"Google Play" in delete-account.html',
     (r) => edit(r, 'delete-account.html', '</main>', '<p>Google Play</p></main>')],
+  // DRO-128: "Google Play" is no longer allowed even inside <main>.
+  ['(e) flags', '"Google Play" inside <main> on privacy.html',
+    (r) => edit(r, 'privacy.html', '</main>', '<p>Google Play</p></main>')],
   ['(e) flags', 'play.google.com link in privacy.html',
     (r) => edit(r, 'privacy.html', '</main>', '<a href="https://play.google.com/x">x</a></main>')],
   ['(d) external-assets', 'third-party <script src> added',
@@ -106,6 +109,11 @@ const faults = [
     (r) => edit(r, 'support.html', '</main>', '<a href="/privacy-old">Privacy</a></main>')],
   ['(i) app-store', 'a second App Store link in index.html',
     (r) => edit(r, 'index.html', '</main>', '<a href="https://apps.apple.com/app/id6809558326">App Store</a></main>')],
+  // DRO-128: the hero App Store link is Apple's badge image.
+  ['(i) app-store', 'badge alt blanked in index.html',
+    (r) => edit(r, 'index.html', 'alt="Download on the App Store"', 'alt=""')],
+  ['(l) links', 'img/app-store-badge.svg deleted',
+    (r) => fs.rmSync(path.join(r, 'img', 'app-store-badge.svg'))],
   ['(k) header-contact', 'header Contact link pointed at /support',
     (r) => edit(r, 'delete-account.html', '<a href="/#contact">Contact</a>', '<a href="/support#contact">Contact</a>')],
   ['scanned', 'all <header> elements stripped from support.html',

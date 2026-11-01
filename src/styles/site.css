@@ -170,7 +170,7 @@ h2 {
   margin-top: 2.6rem;
   margin-bottom: 0.7rem;
 }
-/* An #about (the hero section), #contact or #android jump lands the target
+/* An #about (the hero section) or #contact jump lands the target
    below the sticky header, plus any notch inset. Header heights measured with
    Log in and Sign up on (DRO-126, Chromium and WebKit agree):
      above 560 px            93 px  (one row)                -> 6rem    = 96 px
@@ -382,15 +382,11 @@ ul.plain li { margin-bottom: 0.4rem; }
 }
 .btn-quiet:hover { background: var(--surface); color: var(--text); }
 
-/* "Android: in testing", linking to the Support answer. --muted, not --dim,
-   so it clears 4.5:1 on --ground. */
-.pending {
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  color: var(--muted);
-}
-a.pending { text-decoration: none; }
-a.pending:hover { color: var(--text); }
+/* Apple's App Store badge in the hero (StoreBadges.astro). Sized explicitly,
+   like the wordmark icon, so the global `img { height: auto }` and the .cta
+   flex row can't shrink or distort it. */
+.store-badge { display: inline-block; flex-shrink: 0; line-height: 0; }
+.store-badge img { display: block; width: 144px; height: 48px; max-width: none; }
 
 /* ---------------------------------------------------------------- contact */
 

@@ -1,8 +1,10 @@
 ---
 import { APP_STORE_URL, ANDROID_ENABLED, PLAY_STORE_URL } from '../config';
+// Apple's own "Download on the App Store" badge (US-UK, black), served from
+// public/img so check (d) stays same-origin. 144 x 48 keeps the SVG's
+// 119.66 x 40 viewBox ratio to within 0.3%.
 ---
 <div class="cta">
-  <a class="btn" href={APP_STORE_URL}>Get it on the App Store</a>
-  {!ANDROID_ENABLED && <a class="pending" href="/support#android">Android: in testing</a>}
+  <a class="store-badge" href={APP_STORE_URL}><img src="/img/app-store-badge.svg" alt="Download on the App Store" width="144" height="48"></a>
   {ANDROID_ENABLED && <a class="btn btn-quiet" href={PLAY_STORE_URL}>Get it on Google Play</a>}
 </div>

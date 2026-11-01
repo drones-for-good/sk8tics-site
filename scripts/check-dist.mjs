@@ -284,18 +284,15 @@ const raw = new Map(files.map((f) => [rel(f), fs.readFileSync(f, 'latin1')]));
   if (CONFIG.LOGIN_ENABLED && !count('app.sk8tics.com')) problems.push('LOGIN_ENABLED is true but no app.sk8tics.com link was built');
   if (!CONFIG.ANDROID_ENABLED) {
     if (count('play.google.com')) problems.push(`ANDROID_ENABLED is false but play.google.com appears ${count('play.google.com')} time(s)`);
-    const GP_PAGES = ['support.html', 'privacy.html'];
+    // DRO-128: with the flag off, no page mentions Google Play at all.
     for (const [f, s] of raw) {
       const total = s.split('Google Play').length - 1;
-      if (!total) continue;
-      if (!GP_PAGES.includes(f)) { problems.push(`${f}: "Google Play" appears outside support.html/privacy.html`); continue; }
-      const inMain = byTag(pages.get(f).doc, 'main').map(plain).join(' ').split('Google Play').length - 1;
-      if (inMain !== total) problems.push(`${f}: "Google Play" appears outside <main>`);
+      if (total) problems.push(`${f}: "Google Play" appears ${total} time(s)`);
     }
   } else if (!count('play.google.com')) {
     problems.push('ANDROID_ENABLED is true but no play.google.com link was built');
   }
-  report('(e) flags', problems, `LOGIN_ENABLED=${CONFIG.LOGIN_ENABLED}, ANDROID_ENABLED=${CONFIG.ANDROID_ENABLED}; links match the flags${CONFIG.ANDROID_ENABLED ? '' : ', "Google Play" only in support.html/privacy.html <main>'}`);
+  report('(e) flags', problems, `LOGIN_ENABLED=${CONFIG.LOGIN_ENABLED}, ANDROID_ENABLED=${CONFIG.ANDROID_ENABLED}; links match the flags${CONFIG.ANDROID_ENABLED ? '' : ', "Google Play" on no page'}`);
 }
 
 // ------------------------------------------------------------------ (f) no Delete account in header or menu
@@ -348,9 +345,13 @@ const raw = new Map(files.map((f) => [rel(f), fs.readFileSync(f, 'latin1')]));
     for (const a of links) {
       if (a.attrs.href !== CONFIG.APP_STORE_URL) problems.push(`App Store link is ${a.attrs.href}`);
       if (!ancestors(a).some((p) => hasClass(p, 'hero'))) problems.push('App Store link is not inside .hero');
+      // DRO-128: the link is Apple's badge. Check (l) resolves the img src.
+      const imgs = byTag(a, 'img');
+      if (imgs.length !== 1) problems.push(`App Store link holds ${imgs.length} <img>, expected 1 (the badge)`);
+      for (const img of imgs) if (img.attrs.alt !== 'Download on the App Store') problems.push(`App Store badge alt is "${img.attrs.alt ?? '(none)'}", expected "Download on the App Store"`);
     }
   }
-  report('(i) app-store', problems, `one App Store link in the hero (${CONFIG.APP_STORE_URL})`);
+  report('(i) app-store', problems, `one App Store link in the hero (${CONFIG.APP_STORE_URL}), holding the badge img alt "Download on the App Store"`);
 }
 
 // ------------------------------------------------------------------ (j) home content
