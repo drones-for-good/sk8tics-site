@@ -142,6 +142,13 @@ const faults = [
   ] : []),
   ['(n) header-account', 'n5: a ?mode=signup link inside <main> of index.html, outside the header',
     (r) => edit(r, 'index.html', /(<main\b[^>]*>)/, '$1<a href="https://app.sk8tics.com/?mode=signup">x</a>')],
+  // DRO-133: delete-account#partial and the one spelling.
+  ['(p) partial-anchor', 'p1: id="partial" removed from delete-account.html',
+    (r) => edit(r, 'delete-account.html', ' id="partial"', '')],
+  ['(p) partial-anchor', 'p2: id="partial" moved from the h2 to an empty <span> in <main>, heading kept',
+    (r) => { edit(r, 'delete-account.html', ' id="partial"', ''); edit(r, 'delete-account.html', /(<main\b[^>]*>)/, '$1<span id="partial"></span>'); }],
+  ['(q) one-spelling', 'q1: the word "programme" inserted into <main> of delete-account.html',
+    (r) => edit(r, 'delete-account.html', '</main>', '<p>programme</p></main>')],
 ];
 
 let missed = 0;

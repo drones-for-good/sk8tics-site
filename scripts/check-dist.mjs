@@ -513,4 +513,82 @@ const raw = new Map(files.map((f) => [rel(f), fs.readFileSync(f, 'latin1')]));
   report('(o) about-target', problems, 'header About → /#about; the only id="about" in index.html is the hero section holding the h1');
 }
 
+// ------------------------------------------------------------------ (p) #partial on delete-account
+
+{
+  // DRO-133: old sk8tics-privacy links point at delete-account#partial, so the
+  // anchor must exist once, on the right heading, in the right place, with the
+  // three partial deletes the page promises listed under it.
+  const PARTIAL = 'Deleting only some of your data';
+  const problems = [];
+  const page = pages.get('delete-account.html');
+  const mains = page ? byTag(page.doc, 'main') : [];
+  if (!page) problems.push('no delete-account.html');
+  else if (mains.length !== 1) problems.push(`delete-account.html has ${mains.length} <main>, expected 1`);
+  else {
+    const main = mains[0];
+    const withId = all(page.doc, (n) => n.attrs.id === 'partial');
+    if (withId.length !== 1) problems.push(`delete-account.html has ${withId.length} id="partial", expected 1`);
+    const target = withId.length === 1 ? withId[0] : null;
+    if (target && (target.tag !== 'h2' || plain(target) !== PARTIAL)) {
+      problems.push(`id="partial" is on <${target.tag}> "${plain(target).slice(0, 60)}", expected <h2> "${PARTIAL}"`);
+    }
+    if (target && !ancestors(target).includes(main)) problems.push('id="partial" is not inside <main>');
+
+    const titles = byTag(main, 'h2').map(plain);
+    const at = (t) => {
+      const hits = titles.filter((x) => x === t).length;
+      if (hits !== 1) { problems.push(`<main> has ${hits} h2 "${t}", expected 1`); return -1; }
+      return titles.indexOf(t);
+    };
+    const notAffected = at('What is not affected');
+    const partial = at(PARTIAL);
+    const howLong = at('How long it takes');
+    const before = at('Before you go');
+    const inApp = at('Delete it in the app');
+    if (notAffected >= 0 && partial >= 0 && howLong >= 0 && !(notAffected < partial && partial < howLong)) {
+      problems.push(`h2 order is ${JSON.stringify(titles)}; expected "What is not affected" < "${PARTIAL}" < "How long it takes"`);
+    }
+    if (before >= 0 && inApp >= 0 && !(before < inApp)) {
+      problems.push(`h2 order is ${JSON.stringify(titles)}; expected "Before you go" < "Delete it in the app"`);
+    }
+
+    // The first <ul> after the #partial heading and before the next h2, in
+    // document order, holds exactly the three partial deletes.
+    if (target && target.tag === 'h2') {
+      const order = all(main, () => true);
+      let ul = null;
+      for (let i = order.indexOf(target) + 1; i < order.length; i++) {
+        if (order[i].tag === 'h2') break;
+        if (order[i].tag === 'ul' && !ancestors(order[i]).includes(target)) { ul = order[i]; break; }
+      }
+      if (!ul) problems.push(`no <ul> between the #partial h2 and the next h2`);
+      else {
+        const items = ul.children.filter((c) => c.tag === 'li').length;
+        if (items !== 3) problems.push(`the <ul> under #partial has ${items} <li>, expected 3`);
+      }
+    }
+  }
+  report('(p) partial-anchor', problems, `one id="partial", on the h2 "${PARTIAL}" between "What is not affected" and "How long it takes", 3 <li> under it; "Before you go" before "Delete it in the app"`);
+}
+
+// ------------------------------------------------------------------ (q) one spelling on delete-account
+
+{
+  // DRO-133: <main> of delete-account says "program", never "programme".
+  const problems = [];
+  const page = pages.get('delete-account.html');
+  if (!page) problems.push('no delete-account.html');
+  else {
+    const start = page.src.search(/<main\b/i);
+    const end = page.src.search(/<\/main\s*>/i);
+    if (start === -1 || end === -1 || end < start) problems.push('delete-account.html: cannot find <main>…</main>');
+    else {
+      const hits = page.src.slice(start, end).match(/programme/gi) ?? [];
+      if (hits.length) problems.push(`delete-account.html: <main> contains "programme" ${hits.length} time(s)`);
+    }
+  }
+  report('(q) one-spelling', problems, 'delete-account <main> has 0 matches of /programme/i');
+}
+
 process.exit(failed ? 1 : 0);
