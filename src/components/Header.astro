@@ -1,10 +1,14 @@
 ---
-import { LOGIN_ENABLED, APP_URL, SIGNUP_URL } from '../config';
+import { LOGIN_ENABLED, APP_URL } from '../config';
 
 interface Props { current?: 'support' }
 const { current } = Astro.props;
 // No "Delete account" link here or anywhere in the menu (DRO-86); it lives in
-// the footer only.
+// the footer only. No Contact link either (DRO-130): the contact form is on
+// / and /support, and old /#contact links still land on it.
+// The one account button sits after <nav> so it can hold the top-right corner
+// on a phone, where the menu drops to its own row (see .with-account in
+// src/styles/site.css). Making an account is "Create account" in the web app.
 ---
 <header class="site-head">
   <div class={LOGIN_ENABLED ? 'wrap with-account' : 'wrap'}>
@@ -12,13 +16,7 @@ const { current } = Astro.props;
     <nav class="site-nav">
       <a href="/#about">About</a>
       <a href="/support" aria-current={current === 'support' ? 'page' : undefined}>Support</a>
-      <a href="/#contact">Contact</a>
-      {LOGIN_ENABLED && (
-        <>
-          <a href={APP_URL}>Log in</a>
-          <a class="nav-cta" href={SIGNUP_URL}>Sign up</a>
-        </>
-      )}
     </nav>
+    {LOGIN_ENABLED && <a class="nav-cta" href={APP_URL}>Log in / Sign up</a>}
   </div>
 </header>

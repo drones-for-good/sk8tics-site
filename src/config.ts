@@ -11,10 +11,10 @@ export const APP_STORE_URL = 'https://apps.apple.com/app/id6809558326';
 export const ANDROID_ENABLED = false;
 export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.ying.sk8tics';
 
-// On: every page header shows Log in (APP_URL, the web app's sign-in screen)
-// and Sign up (SIGNUP_URL, the same app opened on its sign-up form). Set it to
-// false to build no app.sk8tics.com link anywhere; the phone scroll-margin in
-// src/styles/site.css is sized for the taller header this flag makes.
+// On: every page header shows one "Log in / Sign up" button in its top-right
+// corner, linking to APP_URL (the web app's sign-in screen, which also offers
+// "Create account"). Set it to false to build no app.sk8tics.com link
+// anywhere; the phone scroll-margin in src/styles/site.css is sized for the
+// two-row phone header this flag makes.
 export const LOGIN_ENABLED = true;
 export const APP_URL = 'https://app.sk8tics.com/';
-export const SIGNUP_URL = 'https://app.sk8tics.com/?mode=signup';

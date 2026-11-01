@@ -63,6 +63,8 @@ function stripAll(root, find, replace) {
   }
   if (!hits) throw new Error(`could not plant fault: ${find} not found in any .html file`);
 }
+// The header button exactly as Header.astro builds it.
+const BUTTON = '<a class="nav-cta" href="https://app.sk8tics.com/">Log in / Sign up</a>';
 const cssFile = (root) => fs.readdirSync(path.join(root, '_astro')).filter((f) => f.endsWith('.css')).map((f) => `_astro/${f}`)[0];
 
 const faults = [
@@ -114,22 +116,32 @@ const faults = [
     (r) => edit(r, 'index.html', 'alt="Download on the App Store"', 'alt=""')],
   ['(l) links', 'img/app-store-badge.svg deleted',
     (r) => fs.rmSync(path.join(r, 'img', 'app-store-badge.svg'))],
-  ['(k) header-contact', 'header Contact link pointed at /support',
-    (r) => edit(r, 'delete-account.html', '<a href="/#contact">Contact</a>', '<a href="/support#contact">Contact</a>')],
+  // DRO-130: the header has no Contact link, but the anchor stays.
+  ['(k) header-contact', 'k1: a Contact link planted in the header of delete-account.html',
+    (r) => edit(r, 'delete-account.html', '</header>', '<a href="/#contact">Contact</a></header>')],
+  ['(k) header-contact', 'k2: id="contact" removed from index.html',
+    (r) => edit(r, 'index.html', 'id="contact"', '')],
   ['scanned', 'all <header> elements stripped from support.html',
     (r) => edit(r, 'support.html', /<header class="site-head">[\s\S]*?<\/header>/g, '')],
-  // DRO-126. (n) is only planted against the LOGIN_ENABLED=true build: its
-  // false branch would need a rebuild with the flag flipped (see (e) above).
-  ['(n) header-account', 'a second Log in link in the header of privacy.html',
-    (r) => edit(r, 'privacy.html', '</nav>', '<a href="https://app.sk8tics.com/">Log in</a></nav>')],
   ['(o) about-target', 'id="about" moved from the hero back onto the bottom h2',
     (r) => { edit(r, 'index.html', /<section class="hero" id="about"/, '<section class="hero"'); edit(r, 'index.html', /<h2>(Look up scores fast)/, '<h2 id="about">$1'); }],
-  ['(n) header-account', 'Log in href without the trailing slash in support.html',
-    (r) => edit(r, 'support.html', /<a href="https:\/\/app\.sk8tics\.com\/">Log in<\/a>/, '<a href="https://app.sk8tics.com">Log in</a>')],
-  ['(n) header-account', 'Sign up removed from the header of delete-account.html',
-    (r) => edit(r, 'delete-account.html', /<a class="nav-cta" href="https:\/\/app\.sk8tics\.com\/\?mode=signup">Sign up<\/a>/, '')],
   ['(o) about-target', 'header About pointed at /#top in privacy.html',
     (r) => edit(r, 'privacy.html', '<a href="/#about">About</a>', '<a href="/#top">About</a>')],
+  // DRO-130: one Log in / Sign up button per header, nothing to ?mode=signup.
+  // n1 and n5 are faults under either flag value; n2 to n4 alter the button,
+  // which the LOGIN_ENABLED=false build does not have.
+  ['(n) header-account', 'n1: a second Log in link in the header of privacy.html',
+    (r) => edit(r, 'privacy.html', '</header>', '<a href="https://app.sk8tics.com/">Log in</a></header>')],
+  ...(LOGIN_ENABLED ? [
+    ['(n) header-account', 'n2: button href without the trailing slash in support.html',
+      (r) => edit(r, 'support.html', BUTTON, '<a class="nav-cta" href="https://app.sk8tics.com">Log in / Sign up</a>')],
+    ['(n) header-account', 'n3: button removed from the header of delete-account.html',
+      (r) => edit(r, 'delete-account.html', BUTTON, '')],
+    ['(n) header-account', 'n4: button label changed to Log in in index.html',
+      (r) => edit(r, 'index.html', BUTTON, '<a class="nav-cta" href="https://app.sk8tics.com/">Log in</a>')],
+  ] : []),
+  ['(n) header-account', 'n5: a ?mode=signup link inside <main> of index.html, outside the header',
+    (r) => edit(r, 'index.html', /(<main\b[^>]*>)/, '$1<a href="https://app.sk8tics.com/?mode=signup">x</a>')],
 ];
 
 let missed = 0;

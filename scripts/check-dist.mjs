@@ -374,14 +374,22 @@ const raw = new Map(files.map((f) => [rel(f), fs.readFileSync(f, 'latin1')]));
 // ------------------------------------------------------------------ (k) header Contact
 
 {
+  // DRO-130: Contact left the menu. The form, and its id="contact" anchor,
+  // stay on / and /support so old /#contact and /support#contact links work.
   const problems = [];
   for (const [f, { doc }] of pages) {
     for (const h of byTag(doc, 'header')) {
-      const c = byTag(h, 'a').filter((a) => plain(a) === 'Contact');
-      if (c.length !== 1 || c[0].attrs.href !== '/#contact') problems.push(`${f}: header Contact link is ${c.map((a) => a.attrs.href).join(',') || 'missing'}`);
+      for (const a of byTag(h, 'a')) {
+        if (plain(a) === 'Contact' || (a.attrs.href ?? '').includes('#contact')) problems.push(`${f}: header has "${plain(a)}" → ${a.attrs.href}`);
+      }
     }
   }
-  report('(k) header-contact', problems, 'header Contact → /#contact');
+  for (const f of ['index.html', 'support.html']) {
+    const page = pages.get(f);
+    if (!page) problems.push(`no ${f}`);
+    else if (!all(page.doc, (n) => n.attrs.id === 'contact').length) problems.push(`${f} has no element with id="contact"`);
+  }
+  report('(k) header-contact', problems, 'no header links to Contact or #contact; index.html and support.html keep id="contact"');
 }
 
 // ------------------------------------------------------------------ (l) internal links resolve
@@ -444,28 +452,39 @@ const raw = new Map(files.map((f) => [rel(f), fs.readFileSync(f, 'latin1')]));
   report('(m) tokens', problems, `${a.size} :root custom properties equal scripts/source-tokens.json`);
 }
 
-// ------------------------------------------------------------------ (n) header account links
+// ------------------------------------------------------------------ (n) header account button
 
 {
   // Literal, not read from config.ts, so a changed APP_URL (say, the trailing
   // slash dropped) shows up here rather than being checked against itself.
-  const LOG_IN = 'https://app.sk8tics.com/';
-  const SIGN_UP = 'https://app.sk8tics.com/?mode=signup';
-  const want = CONFIG.LOGIN_ENABLED ? 1 : 0;
+  // DRO-130: one "Log in / Sign up" button; making an account is "Create
+  // account" in the web app, so nothing links to ?mode=signup any more.
+  const APP = 'https://app.sk8tics.com/';
+  const LABEL = 'Log in / Sign up';
+  const host = (href) => { try { return new URL(href, 'https://sk8tics.com/').host; } catch { return ''; } };
   const problems = [];
   for (const [f, { doc }] of pages) {
     for (const h of byTag(doc, 'header')) {
-      const links = byTag(h, 'a');
-      for (const [label, href] of [['Log in', LOG_IN], ['Sign up', SIGN_UP]]) {
-        const hits = links.filter((a) => plain(a) === label);
-        if (hits.length !== want) problems.push(`${f}: header has ${hits.length} "${label}" link(s), expected ${want}`);
-        for (const a of hits) if (a.attrs.href !== href) problems.push(`${f}: header "${label}" → ${a.attrs.href}, expected ${href}`);
+      // Matched by host, not by text, so a changed label fails as a label
+      // error rather than as a missing link.
+      const hits = byTag(h, 'a').filter((a) => host(a.attrs.href ?? '') === 'app.sk8tics.com');
+      const want = CONFIG.LOGIN_ENABLED ? 1 : 0;
+      if (hits.length !== want) problems.push(`${f}: header has ${hits.length} app.sk8tics.com link(s), expected ${want}`);
+      if (!CONFIG.LOGIN_ENABLED) continue;
+      for (const a of hits) {
+        if (a.attrs.href !== APP) problems.push(`${f}: header button → ${a.attrs.href}, expected ${APP}`);
+        if (plain(a) !== LABEL) problems.push(`${f}: header button label "${plain(a)}", expected "${LABEL}"`);
+        if (!hasClass(a, 'nav-cta')) problems.push(`${f}: header button class "${a.attrs.class ?? ''}" has no nav-cta`);
       }
+    }
+    // Inside or outside a header.
+    for (const n of all(doc, (n) => n.attrs.href !== undefined)) {
+      if (n.attrs.href.includes('mode=signup')) problems.push(`${f}: <${n.tag}> href ${n.attrs.href}`);
     }
   }
   report('(n) header-account', problems, CONFIG.LOGIN_ENABLED
-    ? `every header has one Log in → ${LOG_IN} and one Sign up → ${SIGN_UP}`
-    : 'LOGIN_ENABLED is false and no header has Log in or Sign up');
+    ? `every header has one ${LABEL} → ${APP} and no page links to ?mode=signup`
+    : 'LOGIN_ENABLED is false and no header links to app.sk8tics.com');
 }
 
 // ------------------------------------------------------------------ (o) About lands on the hero
